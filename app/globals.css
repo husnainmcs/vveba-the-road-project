@@ -407,6 +407,37 @@
         letter-spacing: 0.2rem;
         cursor: pointer;
       }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 3rem;
+        gap: 10px;
+      }
+
+      .page-btn {
+        padding: 8px 14px;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .page-btn:hover {
+        background: #f0f0f0;
+      }
+
+      .page-btn.active {
+        background: var(--light-grey-color);
+        color: #fff;
+        border-color: var(--light-grey-color)
+      }
+
+       .page-btn.active:hover {
+        background-color: var(--grey-color);
+      }
+
       /* End of Popular tours */
 
       /* Stories */
