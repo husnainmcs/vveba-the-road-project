@@ -10,7 +10,7 @@ import Footer from './components/footer';
 export default function Home() {
 
  return (
-  <div class="container">
+  <div className="container">
    <Navbar />
    <Header />
    <PopularTours />

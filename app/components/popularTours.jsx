@@ -2,6 +2,7 @@
 
 import React, {useState} from 'react';
 import Image from 'next/image';
+import BookingModal from './bookingModal';
 
 const tours = [
  {
@@ -217,10 +218,15 @@ const PopularTours = () => {
  const [activeCards, setActiveCards] = useState(
   Array(tours.length).fill(false)
  );
+ const [selectedTour, setSelectedTour] = useState(null);
+
+ // --- Pagination Logic ---
  const [currentPage, setCurrentPage] = useState(1);
  const toursPerPage = 3;
-
  const totalPages = Math.ceil(tours.length / toursPerPage);
+
+ const startIndex = (currentPage - 1) * toursPerPage;
+ const currentTours = tours.slice(startIndex, startIndex + toursPerPage);
 
  const toggleCard = (index) => {
   const updated = [...activeCards];
@@ -228,63 +234,61 @@ const PopularTours = () => {
   setActiveCards(updated);
  };
 
- const indexOfLastTour = currentPage * toursPerPage;
- const indexOfFirstTour = indexOfLastTour - toursPerPage;
- const currentTours = tours.slice(indexOfFirstTour, indexOfLastTour);
-
- const renderCard = (tour, index) => {
-  const realIndex = indexOfFirstTour + index;
-  return (
-   <div
-    className={`card ${activeCards[realIndex] ? 'change' : ''}`}
-    key={realIndex}
-   >
-    <div className="front-side">
-     <Image
-      src={tour.image}
-      alt={tour.alt}
-      className="card-image"
-      width={300}
-      height={200}
-     />
-     <h1 className="tour-name">{tour.name}</h1>
-     <ul className="card-list">
-      {tour.details.map((item, i) => (
-       <li key={i} className="card-list-item">
-        {item}
-       </li>
-      ))}
-     </ul>
-     <button
-      className="navigation-button"
-      onClick={() => toggleCard(realIndex)}
-     >
-      price &gt;&gt;
-     </button>
-    </div>
-    <div className="back-side center">
-     <button
-      className="navigation-button"
-      onClick={() => toggleCard(realIndex)}
-     >
-      &lt;&lt; back
-     </button>
-     <h3 className="tour-price">{tour.price}</h3>
-     <button className="card-button">Booking</button>
-    </div>
-   </div>
-  );
- };
-
  return (
   <section className="popular-tours" id="tours">
    <h1 className="popular-tours-heading">The Most Popular Tours</h1>
-
    <div className="cards-wrapper">
-    {currentTours.map((tour, index) => renderCard(tour, index))}
+    {currentTours.map((tour, index) => (
+     <div
+      className={`card ${activeCards[startIndex + index] ? 'change' : ''}`}
+      key={startIndex + index}
+     >
+      {/* Front Side */}
+      <div className="front-side">
+       <Image
+        src={tour.image}
+        alt={tour.alt}
+        className="card-image"
+        width={300}
+        height={200}
+       />
+       <h1 className="tour-name">{tour.name}</h1>
+       <ul className="card-list">
+        {tour.details.map((item, i) => (
+         <li key={i} className="card-list-item">
+          {item}
+         </li>
+        ))}
+       </ul>
+       <button
+        className="navigation-button"
+        onClick={() => toggleCard(startIndex + index)}
+       >
+        price &gt;&gt;
+       </button>
+      </div>
+
+      {/* Back Side */}
+      <div className="back-side center">
+       <button
+        className="navigation-button"
+        onClick={() => toggleCard(startIndex + index)}
+       >
+        &lt;&lt; back
+       </button>
+       <h3 className="tour-price">{tour.price}</h3>
+       <button
+        className="card-button"
+        onClick={() => setSelectedTour(tour)} // Modal open
+       >
+        Booking
+       </button>
+      </div>
+     </div>
+    ))}
    </div>
 
-   {/* Pagination Controls */}
+   {/* ✅ Pagination Controls */}
    <div className="pagination">
     {Array.from({length: totalPages}, (_, i) => (
      <button
@@ -296,6 +300,11 @@ const PopularTours = () => {
      </button>
     ))}
    </div>
+
+   {/* Booking Modal */}
+   {selectedTour && (
+    <BookingModal tour={selectedTour} onClose={() => setSelectedTour(null)} />
+   )}
   </section>
  );
 };

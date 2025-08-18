@@ -440,6 +440,115 @@
 
       /* End of Popular tours */
 
+      /* ===== Modal Styles ===== */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      }
+
+      .modal-container {
+        background: #fff;
+        color: #333;
+        border-radius: 12px;
+        padding: 20px;
+        width: 500px;
+        max-width: 90%;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        position: relative;
+        animation: scaleUp 0.3s ease;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      .modal-header {
+        text-align: center;
+      }
+
+      .modal-title {
+        margin: 15px 0;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .modal-image {
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .modal-details {
+        font-size: 1.2rem;
+        list-style: none;
+        padding: 0;
+        margin: 10px 0;
+      }
+
+      .modal-details li {
+        margin: 5px 0;
+      }
+
+      .modal-price {
+        font-size: 1.6rem;
+        font-weight: bold;
+        margin: 15px 0;
+        text-align: center;
+      }
+
+      .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .modal-form input {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+
+      .modal-submit {
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        background: var(--light-grey-color);
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+
+      .modal-submit:hover {
+        background: var(--grey-color);
+      }
+
+      @keyframes scaleUp {
+        from {
+          transform: scale(0.7);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+
+
       /* Stories */
       .stories {
         padding: 10rem 0;
@@ -662,6 +771,50 @@
         margin-top: 5rem;
       }
       /* End of Footer */
+
+      /* Toast Container */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      /* Toast Base Style */
+      .toast {
+        min-width: 220px;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        animation: slideIn 0.3s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+        opacity: 0.95;
+      }
+
+      /* Success Toast */
+      .toast.success {
+        background: linear-gradient(135deg, #28a745, #218838);
+      }
+
+      /* Error Toast */
+      .toast.error {
+        background: linear-gradient(135deg, #dc3545, #a71d2a);
+      }
+
+      /* Slide & Fade Animations */
+      @keyframes slideIn {
+        from { transform: translateX(120%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes fadeOut {
+        to { opacity: 0; transform: translateX(120%); }
+      }
+
 
       @media (max-width: 1200px) {
         .cards-wrapper {
