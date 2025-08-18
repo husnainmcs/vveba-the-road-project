@@ -16,7 +16,14 @@ const Contact = () => {
 
  const handleSubmit = (e) => {
   e.preventDefault();
-  console.log(form); // Later you can replace this with an API call
+     console.log(form); // Later you can replace this with an API call
+     setForm({
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+     });
+     window.toast('Message sent successfully!', 'success');
  };
 
  return (
