@@ -69,7 +69,7 @@ export default function ImageGallery() {
   ];
 
   return (
-   <section className="popular-tours" id="tours">
+   <section className="popular-tours" id="gallery">
     <h1 className="popular-tours-heading">Tours Gallery</h1>
     <Gallery>
      <div className="gallery-container">

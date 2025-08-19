@@ -7,7 +7,7 @@ const Footer = () => {
      {label: 'Home', href: '#'},
      {label: 'Tours', href: '#tours'},
      {label: 'About Us', href: '#stories'},
-     {label: 'Offer', href: '#'},
+     {label: 'Gallery', href: '#gallery'},
      {label: 'Contact', href: '#contact'},
     ];
     return (
