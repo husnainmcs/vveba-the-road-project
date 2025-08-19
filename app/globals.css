@@ -648,6 +648,51 @@
       }
       /* End of Stories */
 
+
+     /* ==== Gallery Styles ==== */
+      .gallery-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-auto-rows: 200px;
+        gap: 10px;
+        grid-auto-flow: dense;
+        padding: 0 60px;
+      }
+
+      .gallery-item {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        border-radius: 8px;
+      }
+
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+        border-radius: 8px;
+      }
+
+      .gallery-item:hover img {
+        transform: scale(1.05);
+      }
+
+      /* different sizes for masonry effect */
+      .gallery-item.wide {
+        grid-column: span 2;
+      }
+      .gallery-item.tall {
+        grid-row: span 2;
+      }
+      .gallery-item.big {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+
+ /* ==== End Gallery Styles ==== */
+
+
       /* Contact */
       .contact {
         padding: 15rem 0 20rem 0;
