@@ -7,6 +7,8 @@ import Stories from './components/stories';
 import Contact from './components/contact';
 import Footer from './components/footer';
 import ImageGallery from './components/gallery';
+import SortingFilteringBar from './components/filters-tours';
+import DatePickerWithPricing from './components/tour-scheduler';
 
 export default function Home() {
  return (
@@ -14,8 +16,10 @@ export default function Home() {
    <Navbar />
    <Header />
    <PopularTours />
+   <SortingFilteringBar/>
    <Stories />
    <ImageGallery />
+   <DatePickerWithPricing/>
    <Contact />
    <Footer />
   </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Image from 'next/image';
 import BookingModal from './bookingModal';
 
@@ -219,6 +219,35 @@ const PopularTours = () => {
   Array(tours.length).fill(false)
  );
  const [selectedTour, setSelectedTour] = useState(null);
+ const [wishlist, setWishlist] = useState(new Set());
+
+ // Load wishlist from localStorage on component mount
+ useEffect(() => {
+  const savedWishlist = localStorage.getItem('tourWishlist');
+  if (savedWishlist) {
+   setWishlist(new Set(JSON.parse(savedWishlist)));
+  }
+ }, []);
+
+ // Save wishlist to localStorage whenever it changes
+useEffect(() => {
+  localStorage.setItem('tourWishlist', JSON.stringify(Array.from(wishlist)));
+  
+  // Dispatch custom event to notify other components
+  window.dispatchEvent(new CustomEvent('wishlistUpdated'));
+ }, [wishlist]);
+
+ // Toggle wishlist status for a tour
+ const toggleWishlist = (tourName, e) => {
+  e.stopPropagation(); // Prevent card flip when clicking the heart
+  const newWishlist = new Set(wishlist);
+  if (newWishlist.has(tourName)) {
+   newWishlist.delete(tourName);
+  } else {
+   newWishlist.add(tourName);
+  }
+  setWishlist(newWishlist);
+ };
 
  // --- Pagination Logic ---
  const [currentPage, setCurrentPage] = useState(1);
@@ -238,54 +267,65 @@ const PopularTours = () => {
   <section className="popular-tours" id="tours">
    <h1 className="popular-tours-heading">The Most Popular Tours</h1>
    <div className="cards-wrapper">
-    {currentTours.map((tour, index) => (
-     <div
-      className={`card ${activeCards[startIndex + index] ? 'change' : ''}`}
-      key={startIndex + index}
-     >
-      {/* Front Side */}
-      <div className="front-side">
-       <Image
-        src={tour.image}
-        alt={tour.alt}
-        className="card-image"
-        width={300}
-        height={200}
-       />
-       <h1 className="tour-name">{tour.name}</h1>
-       <ul className="card-list">
-        {tour.details.map((item, i) => (
-         <li key={i} className="card-list-item">
-          {item}
-         </li>
-        ))}
-       </ul>
-       <button
-        className="navigation-button"
-        onClick={() => toggleCard(startIndex + index)}
-       >
-        price &gt;&gt;
-       </button>
-      </div>
+    {currentTours.map((tour, index) => {
+     const isWishlisted = wishlist.has(tour.name);
+     return (
+      <div
+       className={`card ${activeCards[startIndex + index] ? 'change' : ''}`}
+       key={startIndex + index}
+      >
+       {/* Front Side */}
+       <div className="front-side">
+        <Image
+         src={tour.image}
+         alt={tour.alt}
+         className="card-image"
+         width={300}
+         height={200}
+        />
+        {/* Wishlist Heart Button */}
+        <button 
+         className={`wishlist-heart ${isWishlisted ? 'wishlisted' : ''}`}
+         onClick={(e) => toggleWishlist(tour.name, e)}
+         aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+         ♥
+        </button>
+        <h1 className="tour-name">{tour.name}</h1>
+        <ul className="card-list">
+         {tour.details.map((item, i) => (
+          <li key={i} className="card-list-item">
+           {item}
+          </li>
+         ))}
+        </ul>
+        <button
+         className="navigation-button"
+         onClick={() => toggleCard(startIndex + index)}
+        >
+         price &gt;&gt;
+        </button>
+       </div>
 
-      {/* Back Side */}
-      <div className="back-side center">
-       <button
-        className="navigation-button"
-        onClick={() => toggleCard(startIndex + index)}
-       >
-        &lt;&lt; back
-       </button>
-       <h3 className="tour-price">{tour.price}</h3>
-       <button
-        className="card-button"
-        onClick={() => setSelectedTour(tour)} // Modal open
-       >
-        Booking
-       </button>
+       {/* Back Side */}
+       <div className="back-side center">
+        <button
+         className="navigation-button"
+         onClick={() => toggleCard(startIndex + index)}
+        >
+         &lt;&lt; back
+        </button>
+        <h3 className="tour-price">{tour.price}</h3>
+        <button
+         className="card-button"
+         onClick={() => setSelectedTour(tour)} // Modal open
+        >
+         Booking
+        </button>
+       </div>
       </div>
-     </div>
-    ))}
+     );
+    })}
    </div>
 
    {/* ✅ Pagination Controls */}

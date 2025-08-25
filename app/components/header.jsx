@@ -1,5 +1,5 @@
 'use client';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 const slides = [
  {
@@ -22,10 +22,45 @@ const slides = [
 const Header = () => {
  const [showSlider, setShowSlider] = useState(false);
  const [current, setCurrent] = useState(0);
+ const [wishlist, setWishlist] = useState([]);
+ const [showWishlist, setShowWishlist] = useState(false);
+
+ // Load wishlist from localStorage on component mount and set up listener
+ useEffect(() => {
+  const loadWishlist = () => {
+   const savedWishlist = localStorage.getItem('tourWishlist');
+   if (savedWishlist) {
+    setWishlist(JSON.parse(savedWishlist));
+   }
+  };
+  
+  // Load initially
+  loadWishlist();
+  
+  // Listen for storage events (for updates from other tabs/windows)
+  const handleStorageChange = (e) => {
+   if (e.key === 'tourWishlist') {
+    loadWishlist();
+   }
+  };
+  
+  // Listen for custom events (for updates in same tab)
+  const handleWishlistUpdate = () => {
+   loadWishlist();
+  };
+  
+  window.addEventListener('storage', handleStorageChange);
+  window.addEventListener('wishlistUpdated', handleWishlistUpdate);
+  
+  return () => {
+   window.removeEventListener('storage', handleStorageChange);
+   window.removeEventListener('wishlistUpdated', handleWishlistUpdate);
+  };
+ }, []);
 
  const nextSlide = () => {
   if (!showSlider) {
-   setShowSlider(true); // 🔥 pehli dafa click pe slider start hoga
+   setShowSlider(true);
   } else {
    setCurrent(current === slides.length - 1 ? 0 : current + 1);
   }
@@ -37,14 +72,32 @@ const Header = () => {
   }
  };
 
+ const toggleWishlistDropdown = () => {
+  setShowWishlist(!showWishlist);
+ };
+
+ // Close dropdown when clicking outside
+ useEffect(() => {
+  const handleClickOutside = (e) => {
+   if (showWishlist && !e.target.closest('.wishlist-container')) {
+    setShowWishlist(false);
+   }
+  };
+  
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+   document.removeEventListener('mousedown', handleClickOutside);
+  };
+ }, [showWishlist]);
+
  return (
   <header className="header center" id="header">
-   {/* Left Arrow (only works when slider is shown) */}
+   {/* Left Arrow */}
    <div className="arrow left" onClick={prevSlide}>
     &#10094;
    </div>
 
-   {/* 🔹 Default Header */}
+   {/* Default Header */}
    {!showSlider && (
     <>
      <div className="header-text">
@@ -61,7 +114,7 @@ const Header = () => {
     </>
    )}
 
-   {/* 🔹 Slider Header */}
+   {/* Slider Header */}
    {showSlider && (
     <>
      <div className="header-text">
@@ -76,7 +129,7 @@ const Header = () => {
     </>
    )}
 
-   {/* Logo (same for both modes) */}
+   {/* Logo */}
    <div className="logo">
     <h1>
      <span className="center">t</span>
@@ -87,9 +140,35 @@ const Header = () => {
      <span className="center">a</span>
      <span className="center">d</span>
     </h1>
+
+   <div className="wishlist-container">
+    <div className="wishlist-counter" onClick={toggleWishlistDropdown}>
+     <span className="heart-icon">♥</span>
+     <span className="wishlist-count">{wishlist.length}</span>
+    </div>
+    
+    {showWishlist && (
+     <div className="wishlist-dropdown">
+      <h3 className="wishlist-title">Your Wishlist</h3>
+      {wishlist.length > 0 ? (
+       <ul className="wishlist-items">
+        {wishlist.map((tourName, index) => (
+         <li key={index} className="wishlist-item">
+          {tourName}
+         </li>
+        ))}
+       </ul>
+      ) : (
+       <p className="wishlist-empty">No tours in your wishlist yet</p>
+      )}
+     </div>
+    )}
+   </div>
    </div>
 
-   {/* Right Arrow → first click: activate slider, next clicks: slide */}
+
+
+   {/* Right Arrow */}
    <div className="arrow right" onClick={nextSlide}>
     &#10095;
    </div>
@@ -98,34 +177,3 @@ const Header = () => {
 };
 
 export default Header;
-
-/*
-import React from 'react'
-
-const Header = () => {
-  return (
-   <header className="header center" id='header'>
-    <div className="header-text">
-     <h1 className="heading">Around the world</h1>
-     <p className="header-paragraph">
-      "Traveling - it leaves you speechless, then turns you into a storyteller"
-     </p>
-    </div>
-    <img src="images/air-balloon.png" alt="Header Image" className="header-image" />
-    <div className="logo">
-     <h1>
-      <span className="center">t</span>
-      <span className="center">h</span>
-      <span className="center">e</span>
-      <span className="center">r</span>
-      <span className="center">o</span>
-      <span className="center">a</span>
-      <span className="center">d</span>
-     </h1>
-    </div>
-   </header>
-  );
-}
-
-export default Header;
-*/
